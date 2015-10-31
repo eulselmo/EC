@@ -1,0 +1,45 @@
+.section .data
+lista:         .int 1,2,3,4,5,6,7
+longlista:     .int (.-lista)/4
+resultado:     .quad -1
+formato:
+    .ascii "suma = %llu = %llx hex\n\0"
+    
+.section .text
+    
+_start: .global _start
+main:   .global main
+    
+        mov   $lista, %ebx
+        mov   longlista, %ecx
+        call suma
+        mov %eax, resultado
+        
+        push resultado
+        push resultado
+        push $formato
+        call printf
+        add $12, %esp
+        
+        mov $1, %eax
+        mov $0, %ebx
+        mov $0, %edx
+        int $0x80
+        
+        
+suma:
+        push %esi
+        mov $0, %eax
+        mov $0, %esi
+bucle:
+        add (%ebx,%esi,4), %eax
+        jnc acarreo
+        inc %edx
+        
+acarreo:
+        inc %esi
+        cmp %esi,%ecx
+        jne bucle
+        
+        
+        ret
